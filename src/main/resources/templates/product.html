@@ -84,16 +84,11 @@
         </button>
     </div>
     <div>
-        <div th:if="${success}" class="alert alert-success" role="alert">
-            <p th:text="${success}"></p>
-        </div>
-        <div th:if="${errors}" class="alert alert-danger" role="alert">
-            <p th:each="error: ${errors}" th:text="${error.getDefaultMessage()}"></p>
-        </div>
+
         <div th:if="${productsAll.size() == 0}">
             <p>No products</p>
         </div>
-        <!--                th:if="${productsAll.size() > 0-->
+
         <table class="table table-hover table-striped">
             <thead>
             <tr>
@@ -163,8 +158,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-<!--                <form th:action="@{/saveProduct}" method="post" id="frmProduct" onsubmit="return validation()">-->
-                <form th:action="@{/saveProduct}" method="post" id="frmProduct" >
+                <form th:action="@{/saveProduct}" method="post" id="frmProduct" onsubmit="return validation()">
                     <div class="modal-body">
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">Name</label>
