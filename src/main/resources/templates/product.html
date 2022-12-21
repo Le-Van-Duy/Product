@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Product</title>
+    <link rel="stylesheet"
+          type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+          rel="stylesheet"
+          type="text/css"/>
+    <script src='https://kit.fontawesome.com/a076d05399.js'
+            crossorigin='anonymous'></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+
+</head>
+<body>
+<div class="container">
+    <h2>Manager Product</h2>
+    <form class="mt-4" th:action="@{/}">
+        <div class="form-row align-items-center">
+            <div class="form-group col-md-2">
+                <label>Name</label>
+                <input type="text" class="form-control"
+                       name="searchByName"
+                       placeholder="Name"/>
+            </div>
+            <div class="form-group col-md-2">
+                <label>Price</label>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Price"
+                       name="searchByPrice"
+
+                />
+
+            </div>
+            <div class="form-group col-md-2">
+                <label>Brand</label>
+                <select class="form-control">
+                    <option th:each="brand : ${brandsAll}"
+                            th:value="${brand.id}"
+                            th:text="${brand.brand_name}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label>SubCategory</label>
+                <select class="form-control">
+                    <option th:each="subCategory : ${subCategoryAll}"
+                            th:value="${subCategory.id}"
+                            th:text="${subCategory.sub_cate_name}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label>Status</label>
+                <select class="form-control">
+                    <option name="searchByStatus" th:each="status : ${statusAll}"
+                            th:value="${status.id}"
+                            th:text="${status.status_name}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label>Search</label>
+                <button type="submit"
+                        class="btn btn-primary form-control"><i
+                        class="fa fa-search"
+                        aria-hidden="true"></i> Search
+                </button>
+            </div>
+        </div>
+    </form>
+    <div>
+        <button
+                class="btn btn-success mb-4 btn-add-product"
+                data-toggle="modal"
+                data-target="#productModal"
+        >
+            Add product
+        </button>
+    </div>
+    <div>
+        <div th:if="${success}" class="alert alert-success" role="alert">
+            <p th:text="${success}"></p>
+        </div>
+        <div th:if="${errors}" class="alert alert-danger" role="alert">
+            <p th:each="error: ${errors}" th:text="${error.getDefaultMessage()}"></p>
+        </div>
+        <div th:if="${productsAll.size() == 0}">
+            <p>No products</p>
+        </div>
+        <!--                th:if="${productsAll.size() > 0-->
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Brand Name</th>
+                <th scope="col">Subcategory</th>
+                <th scope="col">Price</th>
+                <th scope="col">Status</th>
+                <th scope="col">Function</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${productsAll}">
+                <td th:text="${product.id}"></td>
+                <td th:text="${product.produce_name}"></td>
+                <td th:each="brand : ${product.brands}"><p th:text="${brand.brand_name}"></p></td>
+                <td th:text="${product.sub_category.sub_cate_name}"></td>
+                <td th:text="${product.origin_price}"></td>
+                <td th:text="${product.status.status_name}"></td>
+                <td th:data-product-id="${product.id}">
+                    <button th:href="@{showView/{id}(id=${product.id})}"
+                            class="btn btn-success mr-1 btn-view"
+                            data-toggle="modal"><i
+                            style='font-size:20px'
+                            class='far'>&#xf06e;</i>
+                        </i>
+                    </button>
+                    <button th:href="@{showView/{id}(id=${product.id})}"
+                            class="btn btn-warning ml-1 btn-edit"
+                            data-toggle="modal"><i
+                            style="font-size:20px"
+                            class="fa">&#xf044;</i>
+                    </button>
+                    <button th:href="@{showView/{id}(id=${product.id})}"
+                            class="btn btn-danger ml-1 btn-delete"
+                            data-toggle="modal"
+                            data-target="#exampleModalCenterc"><i
+                            style="font-size: 18px"
+                            class="material-icons">&#xe92b;</i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MODAL -->
+    <div
+            class="modal fade"
+            id="productModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="productModalLabel"
+            aria-hidden="true"
+    >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalLabel">Add product</h5>
+                    <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+<!--                <form th:action="@{/saveProduct}" method="post" id="frmProduct" onsubmit="return validation()">-->
+                <form th:action="@{/saveProduct}" method="post" id="frmProduct" >
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Name</label>
+                            <div class="col-sm-8">
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Name"
+                                        name="produce_name"
+                                        id="produce_name"
+                                />
+                                <p style="color: red;font-style:italic " id="errorName"></p>
+                            </div>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Color</label>
+                            <div class="col-sm-8">
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Color"
+                                        name="color"
+                                        id="color"
+                                />
+                                <p style="color: red;font-style:italic " id="errorColor"></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Quantity</label>
+                            <div class="col-sm-8">
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Quantity"
+                                        name="quantity"
+                                        id="quantity"
+                                />
+                                <p style="color: red;font-style:italic " id="errorQuantity"></p>
+                            </div>
+
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Sell price</label>
+                            <div class="col-sm-8">
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Sell price"
+                                        name="sell_price"
+                                        id="sell_price"
+
+                                />
+                                <p style="color: red;font-style:italic " id="errorSellPrice"></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Origin price</label>
+                            <div class="col-sm-8">
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Origin price"
+                                        name="origin_price"
+                                        id="origin_price"
+                                />
+                                <p style="color: red;font-style:italic " id="errorOriginPrice"></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Brand name</label>
+                            <div class="col-sm-8">
+                                <select class="form-control"
+                                        name="brands"
+                                        id="brands">
+                                    <option th:each="brand : ${brandsAll}"
+                                            th:value="${brand.id}"
+                                            th:text="${brand.brand_name}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Subcategory</label>
+                            <div class="col-sm-8">
+                                <select class="form-control"
+                                        name="sub_category"
+                                        id="sub_category">
+                                    <option th:each="subCate : ${subCategoryAll}"
+                                            th:value="${subCate.id}"
+                                            th:text="${subCate.sub_cate_name}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Status</label>
+                            <div class="col-sm-8">
+                                <select class="form-control"
+                                        name="status"
+                                        id="status">
+                                    <option th:each="status : ${statusAll}"
+                                            th:value="${status.id}"
+                                            th:text="${status.status_name}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            Save changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL -->
+</div>
+
+
+<!--DeleteProduct-->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <form th:action="@{/delete/{id}}" method="post" id="frmDelete">
+                <div class="modal-body">
+                    <p> Do you definitely want to delete this product ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-primary submit-delete">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script>
+    var frmProduct = document.getElementById("frmProduct")
+    var frmDelete = document.getElementById("frmDelete")
+    // view product
+    $('.btn-view').on('click', function (event) {
+        event.preventDefault();
+        var href = $(this).attr('href');
+        console.log(href)
+        $('#productModalLabel').text("View Product")
+        frmProduct.querySelector(".btn-submit").innerHTML = "View"
+        frmProduct.querySelector(".btn-submit").setAttribute("disabled", "disabled")
+        frmProduct.setAttribute("action", "")
+
+        $.get(href, function (productView) {
+            console.log(productView)
+            $('#produce_name').val(productView.produce_name)
+            $('#color').val(productView.color)
+            $('#quantity').val(productView.quantity)
+            $('#sell_price').val(productView.sell_price)
+            $('#origin_price').val(productView.origin_price)
+            $('#brands').val(productView.brands[0].id)
+            $('#sub_category').val(productView.sub_category.id)
+            $('#status').val(productView.status.id)
+        })
+        $('#productModal').modal('show');
+    })
+    //  update product
+    $('.btn-edit').on('click', function (event) {
+        event.preventDefault();
+        frmProduct.reset();
+        var href = $(this).attr('href');
+        var productId = $(this).parent().attr('data-product-id')
+        console.log(productId)
+        frmProduct.querySelector(".btn-submit").removeAttribute("disabled")
+        $('#productModalLabel').text("Update Product")
+        frmProduct.querySelector(".btn-submit").innerHTML = "Update"
+        frmProduct.setAttribute("action", "/update/" + productId)
+        $.get(href, function (product) {
+            console.log(product)
+            $('#produce_name').val(product.produce_name)
+            $('#color').val(product.color)
+            $('#quantity').val(product.quantity)
+            $('#sell_price').val(product.sell_price)
+            $('#origin_price').val(product.origin_price)
+            $('#brands').val(product.brands[0].id)
+            $('#sub_category').val(product.sub_category.id)
+            $('#status').val(product.status.id)
+        });
+
+        $('#productModal').modal('show');
+    })
+    // add product
+    $('.btn-add-product').on('click', function () {
+        frmProduct.reset()
+        frmProduct.querySelector(".btn-submit").innerHTML = "Add"
+        $('#productModalLabel').text("Add Product")
+        frmProduct.setAttribute("action", "/saveProduct")
+        frmProduct.querySelector(".btn-submit").removeAttribute("disabled")
+    })
+
+    // delete Product
+    $('.btn-delete').on('click', function (event) {
+        event.preventDefault();
+        var productId = $(this).parent().attr('data-product-id')
+        frmDelete.setAttribute('action', "/delete/" + productId)
+        $('#exampleModalCenter').modal('show');
+    })
+
+    // validation
+    var checkNumber = /^[0-9]+$/
+
+    function validation() {
+        if ($("#produce_name").val() == "") {
+            $("#errorName").text("Please fill in the ProductName !")
+            $("#produce_name").focus()
+            return false
+        } else {
+            $("#errorName").text("")
+        }
+        if ($("#color").val() == "") {
+            $("#errorColor").text("Please fill in the Color !")
+            $("#color").focus()
+            return false
+        } else {
+            $("#errorColor").text("")
+        }
+        if ($("#quantity").val() == "") {
+            $("#errorQuantity").text("Please fill in the Quantity !")
+            $("#quantity").focus()
+            return false
+        } else if (!$("#quantity").val().match(checkNumber) || $("#quantity").val() <= 0) {
+            $("#errorQuantity").text("Quantity must be numeric and greater than 0  !")
+            $("#quantity").focus()
+            return false
+        } else {
+            $("#errorQuantity").text("")
+        }
+        if ($("#sell_price").val() == "") {
+            $("#errorSellPrice").text("Please fill in the SellPrice !")
+            $("#sell_price").focus()
+            return false
+        } else if (!$("#sell_price").val().match(checkNumber) || $("#sell_price").val() <= 0) {
+            $("#errorSellPrice").text("SellPrice must be numeric and greater than 0 !")
+            $("#sell_price").focus()
+            return false
+        } else {
+            $("#errorSellPrice").text("")
+        }
+        if ($("#origin_price").val() == "") {
+            $("#errorOriginPrice").text("Please fill in the OriginPrice !")
+            $("#origin_price").focus()
+            return false
+        } else if (!$("#origin_price").val().match(checkNumber) || $("#origin_price").val() <= 0) {
+            $("#errorOriginPrice").text("OriginPrice must be numeric and greater than 0 !")
+            $("#origin_price").focus()
+            return false
+        } else {
+            $("#errorOriginPrice").text("")
+        }
+        return true;
+    }
+
+</script>
+</body>
+</html>
