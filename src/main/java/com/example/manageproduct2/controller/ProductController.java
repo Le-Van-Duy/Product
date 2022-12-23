@@ -54,6 +54,7 @@ public class ProductController {
     @ResponseBody
     public ProductDTO showView(@PathVariable(value = "id") Long id) {
         return productService.getById(id);
+
     }
 
     @PostMapping("/update/{id}")
