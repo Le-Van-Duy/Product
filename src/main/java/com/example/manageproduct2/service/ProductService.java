@@ -1,6 +1,7 @@
 package com.example.manageproduct2.service;
 
 import com.example.manageproduct2.dto.ProductDTO;
+import com.example.manageproduct2.model.Product;
 
 import java.util.List;
 

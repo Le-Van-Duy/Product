@@ -84,6 +84,12 @@
         </button>
     </div>
     <div>
+        <div th:if="${success}" class="alert alert-success" role="alert">
+            <p th:text="${success}"></p>
+        </div>
+        <div th:if="${message}" class="alert alert-danger" role="alert">
+            <p th:each="error: ${message}" th:text="${error.getDefaultMessage()}"></p>
+        </div>
         <div th:if="${productsAll.size() == 0}">
             <p>No products</p>
         </div>
@@ -157,6 +163,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+
                 <form th:action="@{/saveProduct}" method="post" id="frmProduct" onsubmit="return validation()">
                     <div class="modal-body">
                         <div class="form-group row">
@@ -319,53 +326,46 @@
 <script>
     var frmProduct = document.getElementById("frmProduct")
     var frmDelete = document.getElementById("frmDelete")
+
+    function viewProduct(dataResponse) {
+        if (dataResponse["hasErrors"]) {
+            alert(dataResponse["message"])
+        } else {
+            $('#produce_name').val(dataResponse.data.produce_name)
+            $('#color').val(dataResponse.data.color)
+            $('#quantity').val(dataResponse.data.quantity)
+            $('#sell_price').val(dataResponse.data.sell_price)
+            $('#origin_price').val(dataResponse.data.origin_price)
+            $('#brands').val(dataResponse.data.brands[0].id)
+            $('#sub_category').val(dataResponse.data.sub_category.id)
+            $('#status').val(dataResponse.data.status.id)
+            $('#productModal').modal('show');
+        }
+    }
+
     // view product
-    $('.btn-view').on('click', function (event) {
+    $('.btn-view').on('click', async function (event) {
         event.preventDefault();
-        var href = $(this).attr('href');
-        console.log(href)
         $('#productModalLabel').text("View Product")
         frmProduct.querySelector(".btn-submit").innerHTML = "View"
         frmProduct.querySelector(".btn-submit").setAttribute("disabled", "disabled")
         frmProduct.setAttribute("action", "")
-
-        $.get(href, function (productView) {
-            console.log(productView)
-            $('#produce_name').val(productView.produce_name)
-            $('#color').val(productView.color)
-            $('#quantity').val(productView.quantity)
-            $('#sell_price').val(productView.sell_price)
-            $('#origin_price').val(productView.origin_price)
-            $('#brands').val(productView.brands[0].id)
-            $('#sub_category').val(productView.sub_category.id)
-            $('#status').val(productView.status.id)
-        })
-        $('#productModal').modal('show');
+        const href = await fetch($(this).attr('href'));
+        const dataResponse = await href.json();
+        viewProduct(dataResponse);
     })
     //  update product
-    $('.btn-edit').on('click', function (event) {
+    $('.btn-edit').on('click', async function (event) {
         event.preventDefault();
         frmProduct.reset();
-        var href = $(this).attr('href');
         var productId = $(this).parent().attr('data-product-id')
-        console.log(productId)
         frmProduct.querySelector(".btn-submit").removeAttribute("disabled")
         $('#productModalLabel').text("Update Product")
         frmProduct.querySelector(".btn-submit").innerHTML = "Update"
         frmProduct.setAttribute("action", "/update/" + productId)
-        $.get(href, function (product) {
-            console.log(product)
-            $('#produce_name').val(product.produce_name)
-            $('#color').val(product.color)
-            $('#quantity').val(product.quantity)
-            $('#sell_price').val(product.sell_price)
-            $('#origin_price').val(product.origin_price)
-            $('#brands').val(product.brands[0].id)
-            $('#sub_category').val(product.sub_category.id)
-            $('#status').val(product.status.id)
-        });
-
-        $('#productModal').modal('show');
+        const href = await fetch($(this).attr('href'));
+        const dataResponse = await href.json();
+        viewProduct(dataResponse);
     })
     // add product
     $('.btn-add-product').on('click', function () {

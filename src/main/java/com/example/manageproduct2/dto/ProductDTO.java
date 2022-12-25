@@ -25,21 +25,21 @@ public class ProductDTO {
     @NotBlank(message = "Color is mandatory")
     private String color;
 
-    @NotBlank(message = "Quantity is mandatory")
+    @NotNull(message = "Quantity is mandatory")
     private Long quantity;
 
-    @NotBlank(message = "SellPrice is mandatory")
+    @NotNull(message = "SellPrice is mandatory")
     private Double sell_price;
 
-    @NotBlank(message = "brands is mandatory")
+
     @JsonIgnoreProperties("products")
     private Set<Brand> brands;
 
-    @NotBlank(message = "SubCate is mandatory")
+
     @JsonManagedReference
     private Sub_Category sub_category;
 
-    @NotBlank(message = "OriginPrice is mandatory")
+    @NotNull(message = "OriginPrice is mandatory")
     private Double origin_price;
 
     @JsonManagedReference

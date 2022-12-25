@@ -7,12 +7,12 @@ import com.example.manageproduct2.repository.ProductRepository;
 import com.example.manageproduct2.service.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class ProductServiceImpl implements ProductService {
     @Autowired
