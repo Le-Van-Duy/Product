@@ -3,11 +3,9 @@ package com.example.manageproduct2.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -54,7 +52,6 @@ public class Product {
     public void addBrand(Brand br) {
         brands.add(br);
         br.getProducts().add(this);
-
     }
     public void removeBrand(Brand br) {
         brands.remove(br);

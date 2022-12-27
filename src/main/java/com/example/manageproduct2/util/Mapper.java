@@ -1,4 +1,4 @@
-package com.example.manageproduct2.until;
+package com.example.manageproduct2.util;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

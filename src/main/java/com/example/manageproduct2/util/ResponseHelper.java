@@ -1,4 +1,4 @@
-package com.example.manageproduct2.until;
+package com.example.manageproduct2.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

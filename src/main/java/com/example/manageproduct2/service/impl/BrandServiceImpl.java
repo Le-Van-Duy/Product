@@ -4,8 +4,6 @@ import com.example.manageproduct2.dto.BrandDTO;
 import com.example.manageproduct2.model.Brand;
 import com.example.manageproduct2.repository.BrandRepository;
 import com.example.manageproduct2.service.BrandService;
-import com.example.manageproduct2.until.Mapper;
-import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
